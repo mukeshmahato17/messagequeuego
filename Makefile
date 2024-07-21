@@ -1,5 +1,5 @@
 build:
-	@go build -o bin/gokafka
+	@go build -o bin/messagequeuego
 
 run: build
 	@./bin/gokafka
