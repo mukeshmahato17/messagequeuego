@@ -8,7 +8,9 @@ import (
 func main() {
 	cfg := &Config{
 		ListenAddr: ":3000",
-		Store:      NewMemoryStore(),
+		StoreProducerFunc: func() Storer {
+			return NewMemoryStore()
+		},
 	}
 	s, err := NewServer(cfg)
 	if err != nil {

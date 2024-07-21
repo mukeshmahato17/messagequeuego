@@ -3,8 +3,8 @@ package main
 import "net/http"
 
 type Config struct {
-	ListenAddr string
-	Store      Storer
+	ListenAddr        string
+	StoreProducerFunc StoreProducerFunc
 }
 
 type Server struct {
