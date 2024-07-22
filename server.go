@@ -22,3 +22,10 @@ func NewServer(cfg *Config) (*Server, error) {
 func (s *Server) Start() {
 	http.ListenAndServe(s.ListenAddr, nil)
 }
+
+func (s *Server) createTopic(name string) {
+	_, ok := s.topics[name]
+	if !ok {
+		s.topics[name] = s.StoreProducerFunc()
+	}
+}
