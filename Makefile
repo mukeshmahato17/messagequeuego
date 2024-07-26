@@ -2,7 +2,7 @@ build:
 	@go build -o bin/messagequeuego
 
 run: build
-	@./bin/gokafka
+	@./bin/messagequeuego
 
 test:
 	@go test ./... -v

@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 type Config struct {
 	ListenAddr        string
@@ -20,12 +23,19 @@ func NewServer(cfg *Config) (*Server, error) {
 }
 
 func (s *Server) Start() {
+	http.HandleFunc("/publish", s.handlePublish)
 	http.ListenAndServe(s.ListenAddr, nil)
 }
 
-func (s *Server) createTopic(name string) {
+func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Path)
+}
+
+func (s *Server) createTopic(name string) bool {
 	_, ok := s.topics[name]
 	if !ok {
 		s.topics[name] = s.StoreProducerFunc()
+		return true
 	}
+	return false
 }
