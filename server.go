@@ -23,11 +23,10 @@ func NewServer(cfg *Config) (*Server, error) {
 }
 
 func (s *Server) Start() {
-	http.HandleFunc("/publish", s.handlePublish)
-	http.ListenAndServe(s.ListenAddr, nil)
+	http.ListenAndServe(s.ListenAddr, s)
 }
 
-func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL.Path)
 }
 
