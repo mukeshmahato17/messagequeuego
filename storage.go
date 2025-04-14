@@ -1,19 +1,13 @@
 package main
 
-import (
-	"fmt"
-	"sync"
-)
+import "fmt"
 
-type StoreProducerFunc func() Storer
-
-type Storer interface {
+type Storage interface {
 	Push([]byte) (int, error)
 	Fetch(int) ([]byte, error)
 }
 
 type MemoryStore struct {
-	mu   sync.RWMutex
 	data [][]byte
 }
 
@@ -23,23 +17,15 @@ func NewMemoryStore() *MemoryStore {
 	}
 }
 
-func (s *MemoryStore) Push(b []byte) (int, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	s.data = append(s.data, b)
-	return len(s.data) - 1, nil
+func (m *MemoryStore) Push(b []byte) (int, error) {
+	m.data = append(m.data, b)
+	return len(m.data) - 1, nil
 }
 
-func (s *MemoryStore) Fetch(offset int) ([]byte, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+func (m *MemoryStore) Fetch(offset int) ([]byte, error) {
+	if len(m.data) < offset {
+		return nil, fmt.Errorf("offset (%d) is too high", offset)
+	}
 
-	if offset < 0 {
-		return nil, fmt.Errorf("offset cannot be less than 0")
-	}
-	if len(s.data)-1 < offset {
-		return nil, fmt.Errorf("offset (%d) too high", offset)
-	}
-	return s.data[offset], nil
+	return m.data[offset], nil
 }
